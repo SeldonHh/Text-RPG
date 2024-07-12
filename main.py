@@ -4,6 +4,11 @@ import random
 
 exit = False
 name = 'Seldon'
+quest_done = True
+current_area = "Area: Goblin Caves"
+rat_kill_count = 0
+goblin_kill_count = 0
+goblincaves_kill_count = 0
 
 # stats
 hp = 10
@@ -81,7 +86,6 @@ def passturn_function():
     ennemy_turn()
 passturn_image = PhotoImage(file='pass turn.png')
 passturn_button = Button(root, image=passturn_image, command= passturn_function,borderwidth=0)
-
 #functions
 def ennemy_turn():
     global hp, ennemy_hp,ennemy_damage
@@ -122,6 +126,11 @@ def erase():
     Quest_Button.place_forget()
     win_label.place_forget()
     lose_label.place_forget()
+    Bestiary_Button.place_forget()
+    Inventory_Button.place_forget()
+    Shop_Button.place_forget()
+    Mission_Label.place_forget()
+    cuurent_area_label.place_forget()
 #scene
 def combat():
     erase()
@@ -152,24 +161,74 @@ def combat():
     passturn_button.place(x=400,y=600)
     ennemy_action_label.place(x=550,y=200)
 
+def new_quest():
+    global Mission_Label, quest_done, Quest
+    if quest_done == True:
+        Quest = random.choice(["slay 5 rat","slay 5 goblin","slay 8 monsters in goblin caves"])
+        Mission_Label = Label(root,text=Quest)
+        quest_done = False
+
 def quest():
+    global rat_kill_count,goblin_kill_count,goblincaves_kill_count,quest_done
     erase()
+    new_quest()
+    print(Quest)
+    print(rat_kill_count)
+    if Quest == "slay 5 rat" and rat_kill_count > 1:
+        rat_kill_count = 0
+        quest_done = True
+        new_quest()
+        print("done")
+    if Quest == "slay 5 goblin" and goblin_kill_count > 1:
+        goblin_kill_count = 0
+        quest_done = True
+        new_quest()
+    if Quest == "slay 8 monsters in goblin caves" and goblincaves_kill_count > 1:
+        goblincaves_kill_count = 0
+        quest_done = True
+        new_quest()
+    Mission_Label.place(x=550,y=300)
     continue_button.place(x=550,y=700)
 def area():
+    erase()
+    
+    continue_button.place(x=550,y=700)
+def inventory():
+    erase()
+    continue_button.place(x=550,y=700)
+def shop():
+    erase()
+    continue_button.place(x=550,y=700)
+def bestiary():
     erase()
     continue_button.place(x=550,y=700)
 Fight_button = Button(root,text="Go fight",command= combat, borderwidth=0)
 Quest_Button = Button(root,text='Quests', command=quest,borderwidth=0)
 Area_Button = Button(root,text='Change area', command=area,borderwidth=0)
+Inventory_Button = Button(root,text="Inventory", command=inventory,borderwidth=0)
+Shop_Button = Button(root,text="Go to shop",command=shop,borderwidth=0)
+Bestiary_Button = Button(root,text="Bestiary",command=bestiary,borderwidth=0)
 
 def menu():
     erase()
-    Fight_button.place(x=550,y=200)
-    Quest_Button.place(x=550,y=300)
-    Area_Button.place(x=550,y=400)
+    cuurent_area_label.place(x=300,y=100)
+    Fight_button.place(x=550,y=150)
+    Area_Button.place(x=550,y=250)
+    Quest_Button.place(x=550,y=350)
+    Inventory_Button.place(x=550,y=450)
+    Shop_Button.place(x=550,y=550)
+    Bestiary_Button.place(x=550,y=650)
+    
 
 def win():
+    global rat_kill_count, goblin_kill_count, goblincaves_kill_count
     erase()
+    if ennemytype == "The rat":
+        rat_kill_count += 1
+    if ennemytype == "The goblin":
+        goblin_kill_count += 1
+    if current_area == "Area: Goblin Caves":
+        goblincaves_kill_count += 1
     win_label.place(x=555,y=300)
     continue_button.place(x=550,y=700)
 
@@ -191,6 +250,8 @@ ennemy_damage_label = Label(root, text=ennemytype +" will do " + str(ennemy_dama
 ennemy_action_label = Label(root, text="", bg='white')
 win_label = Label(root, text=name+' won, gg')
 lose_label = Label(root, text=ennemytype+' won')
+Mission_Label = Label(root,text='')
+cuurent_area_label = Label(root,text=current_area)
 
 # Prequel text
 Prequel = Label(root, text=("You awaken in a cave, you're lost and you don't remember how you got here,\n at least, you know your name, "
