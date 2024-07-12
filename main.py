@@ -3,10 +3,9 @@ from tkinter import *
 import random
 
 exit = False
-#name = input("what's your name, hero? (you need to write in console)\n")
 name = 'Seldon'
 
-#stats
+# stats
 hp = 10
 level = "1"
 damage_start = 1
@@ -18,45 +17,57 @@ ennemy_level = 1
 ennemy_hp = 10
 ennemy_damage = 2
 
-#main
+# main
 root = Tk()
-root.attributes('-fullscreen',True)
-root.title("main")
-root.resizable(height= False, width = False)
-root.option_add("*font",("Arial"))
+root.title("Eight Dragon Wars")
+root.attributes('-fullscreen', True)
+root.option_add("*font", ("Arial"))
 root["bg"] = "white"
 
-#Buttons 
+# Get screen width and height
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
 
+# Function to toggle fullscreen
+def toggle_fullscreen(event=None):
+    root.attributes('-fullscreen', not root.attributes('-fullscreen'))
+
+# Bind F11 key to toggle fullscreen
+root.bind('<F11>', toggle_fullscreen)
+root.bind('<Escape>', lambda e: root.quit())
+
+# Buttons 
 def exit_function():
     root.destroy()
+
 exit_image = PhotoImage(file='exit.png')
-exit_button = Button(root,image = exit_image, command= exit_function,borderwidth=0)
-exit_button.place(x=0,y=0)
+exit_button = Button(root, image=exit_image, command=exit_function, borderwidth=0)
+exit_button.place(x=0, y=0)
 
 def start_function():
     start_button.place_forget()
-    Prequel.place(x=200,y=200)
-    back_button.place(x=1000,y=0)
-    continue_button.place(x=500,y=600)
+    Prequel.place(relx=0.5, rely=0.5, anchor=CENTER)
+    back_button.place(relx=1.0, rely=0, anchor=NE)
+    continue_button.place(relx=0.5, rely=0.9, anchor=CENTER)
+
 start_image = PhotoImage(file='start.png')
-start_button = Button(root, image=start_image, command= start_function, borderwidth=0)
-start_button.place(x=550,y=300)
+start_button = Button(root, image=start_image, command=start_function, borderwidth=0)
+start_button.place(relx=0.5, rely=0.5, anchor=CENTER)
 
 def back_function():
     erase()
     back_button.place_forget()
-    start_button.place(x=530,y=300)
+    start_button.place(relx=0.5, rely=0.5, anchor=CENTER)
+
 back_image = PhotoImage(file="back.png")
-back_button = Button(root,image=back_image, command= back_function, borderwidth=0)
+back_button = Button(root, image=back_image, command=back_function, borderwidth=0)
 
 def continue_function():
     erase()
     menu()
 
-
 continue_image = PhotoImage(file="continue.png")
-continue_button = Button(root,image=continue_image, command=continue_function ,borderwidth= 0)
+continue_button = Button(root, image=continue_image, command=continue_function, borderwidth=0)
 
 def attack_function():
     global ennemy_hp
@@ -167,21 +178,21 @@ def lose():
     lose_label.place(x=555,y=300)
     continue_button.place(x=550,y=700)
 
+# Labels
+Title = Label(root, text='EIGHT DRAGON WARS', font='Papyrus 25', bg='white')
+Title.place(relx=0.5, rely=0.05, anchor=CENTER)
 
-#Labels
-Title = Label(root,text=('EIGHT DRAGON WARS'), font='Papyrus 25', bg='white' )
-Title.place(x=450,y=20)
 level_label = Label(root, text='you are level ' + level)
-ennemy_level_label = Label(root,text=ennemytype+' is level '+str(ennemy_level))
-hp_label = Label(root,text='you have '+str(hp)+" hp")
+ennemy_level_label = Label(root, text=ennemytype+' is level '+str(ennemy_level))
+hp_label = Label(root, text='you have '+str(hp)+" hp")
 damage_label = Label(root, text='you will do '+str(damage_start)+' to '+str(damage_end)+' damage')
 ennemy_hp_label = Label(root, text=ennemytype +' have ' + str(ennemy_hp) +" hp")
-ennemy_damage_label = Label(root,text=ennemytype +" will do " + str(ennemy_damage) + " damage")
-ennemy_action_label = Label(root, text="",bg='white')
-win_label = Label(root,text=name+' won, gg')
-lose_label = Label(root,text=ennemytype+' won')
+ennemy_damage_label = Label(root, text=ennemytype +" will do " + str(ennemy_damage) + " damage")
+ennemy_action_label = Label(root, text="", bg='white')
+win_label = Label(root, text=name+' won, gg')
+lose_label = Label(root, text=ennemytype+' won')
 
-#prequel text
+# Prequel text
 Prequel = Label(root, text=("You awaken in a cave, you're lost and you don't remember how you got here,\n at least, you know your name, "
 +name+".\n The last thing you recall is running from a merchant from which you stole in Al'Banhera, the capital city."
 +"\n You finally get up and look around you , you suddenly fall on the ground, terrified."
@@ -191,6 +202,6 @@ Prequel = Label(root, text=("You awaken in a cave, you're lost and you don't rem
 +"\n My kingdom is attacked by Zul'Sahar, my sister. I need to retreat and i chose you to recieve my blessings."
 +"\n You need to become stronger to kill the corrupted creation of Zul'Sahar and to finally slain her."
 +"\n The dragon suddenly disappears and a ray of light suddenly stuns you..."
-, borderwidth=0,bg='white')
+, borderwidth=0, bg='white', wraplength=screen_width*0.8)
 
 root.mainloop()
