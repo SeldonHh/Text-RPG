@@ -54,12 +54,29 @@ def toggle_fullscreen(event=None):
 root.bind('<F11>', toggle_fullscreen)
 root.bind('<Escape>', lambda e: root.quit())
 
+#class
+
+class shopitem :
+    def __init__(self,price,name,):
+        self.price = price
+        self.name = name
+        pass
+
 # Buttons 
 def Sewers_command():
     global current_area
     current_area = "Area: Sewers"
     continue_function()
 sewers_button = Button(root,text="Go to the sewers",command=Sewers_command, borderwidth=0)
+
+def buy_command():
+    global item,gold,key_obtained
+    if gold > lockpick.price:
+        gold -= lockpick.price
+        key_obtained = True
+        item.append("lockpick")
+        buy_button.place_forget()
+buy_button = Button(root,text="Buy" + shopitem.__name__,command=buy_command,borderwidth=0)
 
 def village_command():
     global current_area
@@ -83,7 +100,6 @@ village_kill_choice_button = Button(root,text="Attack the villagers",command=vil
 def village_peace_choice_function():
     global quest_stage
     quest_stage = 3.2
-    print(str(quest_stage))
     quest()
 village_peace_choice_button = Button(root,text="Go talk to the chief of the village",command=village_peace_choice_function,borderwidth=0)
 
@@ -122,10 +138,13 @@ attack_button = Button(root,image=attack_image,command=attack_function,borderwid
 
 def Use_key_function():
     global quest_stage
-    item.remove("key")
+    if "key" in item :
+        item.remove("key")
+    if "lockpick" in item:
+        item.remove("lockpick")
     quest_stage = 2
     quest()
-use_key_button = Button(root,text="Use da key",command=Use_key_function,borderwidth=0)
+use_key_button = Button(root,text="Use da key/lockpick",command=Use_key_function,borderwidth=0)
 
 def passturn_function():
     ennemy_turn()
@@ -193,6 +212,8 @@ def erase():
     item_label.place_forget()
     use_key_button.place_forget()
     drop_label.place_forget()
+    buy_button.place_forget()
+    gold_label.place_forget()
 #scene
 def combat():
     erase()
@@ -260,7 +281,7 @@ def quest():
     if quest_stage == 3.2 or quest_stage == 3.4:
         Mission_Label.place(x=150,y=300)
     if quest_stage == 1 and key_obtained == True:
-        use_key_button.place(x=450,y=500)
+        use_key_button.place(x=550,y=500)
 
 def area():
     erase()
@@ -270,8 +291,8 @@ def area():
     continue_button.place(x=450,y=650)
 def inventory():
     erase()
-    item_label['text']="You have " + str(item)
-    item_label.place(x=500,y=100)
+    item_label['text']="You have "+str(*item)+' :'
+    item_label.place(x=500,y=200)
     name_label.place(x=200,y=100)
     hp_label['text']="you have "+str(maxhp)+" hp"
     hp_label.place(x=200,y=200)
@@ -283,15 +304,23 @@ def inventory():
     level_label.place(x=200,y=350)
     xp_label["text"]="you have "+str(xp)+" xp"
     xp_label.place(x=200,y=380)
+    gold_label["text"]="you have "+str(gold)+" gold"
+    gold_label.place(x=200,y=400)
     continue_button.place(x=450,y=650)
 def shop():
+    global lockpick, current_area
     erase()
     continue_button.place(x=450,y=650)
+    if current_area == "Area: Sewers" and key_obtained == False:
+        lockpick = shopitem(25,"lockpick")
+        buy_button["text"]="Buy "+lockpick.name+" for "+str(lockpick.price)+"gold"
+        buy_button.place(x=150,y=250)
+
 def bestiary():
     erase()
-    bestiary_rat_label['text']='\nThe rat:\nThis annoying pest is the slayer of\nbeginning adventurers.\nThey are much stronger than usually\nbecause of the corruption.\nHp=10\nDamage=2\nLevel=1\n\nyou have killed '+str(permanent_rat_kill_count)+" of them"
+    bestiary_rat_label['text']='\nThe rat:\nThis annoying pest is the slayer of\nbeginning adventurers.\nThey are much stronger than usually\nbecause of the corruption.\nHp=10\nDamage=2\nLevel=1\nMay drop a key\nyou have killed '+str(permanent_rat_kill_count)+" of them"
     bestiary_rat_label.place(x=100,y=200)
-    bestiary_bandit_label['text']="\nThe Bandit:\n Al'banhera being the second most criminal city in the world\na lot of bandit roam the city and the sewers\nit is legal to kill them!\nHp=7\nDamage=5\nLevel=1\n\nyou have killed "+str(permanent_bandit_kill_count)+" of them"
+    bestiary_bandit_label['text']="\nThe Bandit:\n Al'banhera being the second\nmost criminal city in the world\na lot of bandit roam the city and the sewers\nit is legal to kill them!\nHp=7\nDamage=5\nLevel=1\n\nyou have killed "+str(permanent_bandit_kill_count)+" of them"
     bestiary_bandit_label.place(x=500,y=200)
     continue_button.place(x=450,y=650)
 def achievements():
@@ -329,7 +358,6 @@ def win():
         xpgain(random.randint(4,7))
         goldgain(random.randint(0,10))
         drop_chance = random.randint(1,4)
-        print(drop_chance)
         if drop_chance == 2 and key_obtained == False:
             drops("key")
             key_obtained = True
@@ -353,7 +381,6 @@ def win():
 def drops(drop):
     global item
     item.append(drop)
-    print(str(item))
 
 def goldgain(amount):
     global gold
@@ -428,6 +455,7 @@ total_kill_count_label = Label(root, text="you have killed "+str(total_kill_coun
 Splat_Label = Label(root,text="GG, you found the golden splatplays")
 item_label = Label(root,text="Items:" + str(item))
 drop_label = Label(root,text='You obtained' + "")
+gold_label = Label(root,text="you have "+str(gold)+" gold")
 
 # Prequel text
 Prequel = Label(root, text="You awaken in a cave, you're lost and you don't remember how you got here,\n at least, you know your name, "
